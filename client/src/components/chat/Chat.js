@@ -3,6 +3,7 @@ import queryString from 'query-string';
 import io from 'socket.io-client';
 import InfoBar from '../infoBar/InfoBar';
 import Input from '../input/Input';
+import Messages from '../messages/Messages';
 import './Chat.css';
 
 let socket;
@@ -22,8 +23,10 @@ const Chat = ({ location }) => {
         setRoom(room);
 
         socket = io(ENDPOINT);
-        socket.emit('join', { name, room }, () => {
-            
+        socket.emit('join', { name, room }, (error) => {
+            if(error) {
+                alert(error);
+            }
         });
 
         return () => {
@@ -51,7 +54,15 @@ const Chat = ({ location }) => {
         <div className="outerContainer">
             <div className="container">
                 <InfoBar room={room} />
-                <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
+                <Messages
+                    name={name}
+                    messages={messages}
+                />
+                <Input
+                    message={message}
+                    setMessage={setMessage}
+                    sendMessage={sendMessage}
+                />
             </div>
         </div>
     );
